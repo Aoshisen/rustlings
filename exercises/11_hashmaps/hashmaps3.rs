@@ -26,11 +26,49 @@ fn build_scores_table(results: &str) -> HashMap<&str, TeamScores> {
         let team_2_name = split_iterator.next().unwrap();
         let team_1_score: u8 = split_iterator.next().unwrap().parse().unwrap();
         let team_2_score: u8 = split_iterator.next().unwrap().parse().unwrap();
-
         // TODO: Populate the scores table with the extracted details.
         // Keep in mind that goals scored by team 1 will be the number of goals
         // conceded by team 2. Similarly, goals scored by team 2 will be the
         // number of goals conceded by team 1.
+
+        //使用迭代器版本 (推荐使用的版本)
+        // 如果tem_1_name 存在 在 scores 中,更新scores 中的 goals_scored 和 goals_conceded
+        // 如果不存在,则插入一个新的 TeamScores 结构体,
+        // team_2_name 同理
+        [
+            (team_1_name, team_1_score, team_2_score),
+            (team_2_name, team_2_score, team_1_score),
+        ]
+        .iter()
+        .for_each(|&(team_name, goals_scored, goals_conceded)| {
+            scores
+                .entry(team_name)
+                .and_modify(|team_scores| {
+                    team_scores.goals_scored += goals_scored;
+                    team_scores.goals_conceded += goals_conceded;
+                })
+                .or_insert(TeamScores {
+                    goals_scored,
+                    goals_conceded,
+                });
+        });
+
+        // // 使用循环版本代码
+        // let teams = [
+        //     (team_1_name, team_1_score, team_2_score),
+        //     (team_2_name, team_2_score, team_1_score),
+        // ];
+        // for (team_name, goals_scored, goals_conceded) in teams {
+        //     let modify = |team_scores: &mut TeamScores| {
+        //         team_scores.goals_scored += goals_scored;
+        //         team_scores.goals_conceded += goals_conceded;
+        //     };
+        //     let insert = TeamScores {
+        //         goals_conceded,
+        //         goals_scored,
+        //     };
+        //     scores.entry(team_name).and_modify(modify).or_insert(insert);
+        // }
     }
 
     scores
