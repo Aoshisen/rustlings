@@ -3,7 +3,8 @@
 macro_rules! my_macro {
     () => {
         println!("Check out my macro!");
-    }
+    };
+    //使用分号分割两个不同的重载函数
     ($val:expr) => {
         println!("Look at this other macro: {}", $val);
     }
